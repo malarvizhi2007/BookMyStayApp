@@ -1,32 +1,20 @@
-/**
- * ==========================================================
- * MAIN CLASS - BookMyStayApp
- * ==========================================================
- *
- * Demonstrates centralized room inventory management.
- *
- * @version 3.0
- */
-
-public class  BookMyStayApp {
+public class BookMyStayApp{
 
     public static void main(String[] args) {
 
-        System.out.println("Room Inventory System\n");
-
         RoomInventory inventory = new RoomInventory();
 
-        inventory.displayInventory();
+        Room singleRoom = new SingleRoom();
+        Room doubleRoom = new DoubleRoom();
+        Room suiteRoom = new SuiteRoom();
 
-        System.out.println("\nChecking availability for SingleRoom:");
-        System.out.println(inventory.getAvailability("SingleRoom"));
+        RoomSearchService searchService = new RoomSearchService();
 
-        System.out.println("\nUpdating DoubleRoom availability...");
-
-        int current = inventory.getAvailability("DoubleRoom");
-        inventory.updateAvailability("DoubleRoom", current + 1);
-
-        System.out.println("\nUpdated Inventory:");
-        inventory.displayInventory();
+        searchService.searchAvailableRooms(
+                inventory,
+                singleRoom,
+                doubleRoom,
+                suiteRoom
+        );
     }
 }
