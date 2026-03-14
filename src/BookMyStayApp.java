@@ -1,32 +1,35 @@
 /**
  * ==========================================================
- * MAIN CLASS - BookMyStayApp
+ * MAIN CLASS - UseCase5BookingRequestQueue
  * ==========================================================
- *
- * Demonstrates centralized room inventory management.
- *
- * @version 3.0
+ * Demonstrates FIFO booking request handling.
+ * @version 5.0
  */
 
-public class  BookMyStayApp {
+public class BookMyStayApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Room Inventory System\n");
+        System.out.println("Booking Request Queue");
 
-        RoomInventory inventory = new RoomInventory();
+        BookingRequestQueue bookingQueue = new BookingRequestQueue();
 
-        inventory.displayInventory();
+        // Add booking requests
+        bookingQueue.addRequest(new Reservation("Abhi", "Single"));
+        bookingQueue.addRequest(new Reservation("Subha", "Double"));
+        bookingQueue.addRequest(new Reservation("Vanmathi", "Suite"));
 
-        System.out.println("\nChecking availability for SingleRoom:");
-        System.out.println(inventory.getAvailability("SingleRoom"));
+        // Process requests
+        while (bookingQueue.hasPendingRequests()) {
 
-        System.out.println("\nUpdating DoubleRoom availability...");
+            Reservation request = bookingQueue.getNextRequest();
 
-        int current = inventory.getAvailability("DoubleRoom");
-        inventory.updateAvailability("DoubleRoom", current + 1);
-
-        System.out.println("\nUpdated Inventory:");
-        inventory.displayInventory();
+            System.out.println(
+                    "Processing booking for Guest: "
+                            + request.getGuestName()
+                            + ", Room Type: "
+                            + request.getRoomType()
+            );
+        }
     }
 }
