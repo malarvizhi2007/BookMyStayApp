@@ -2,21 +2,17 @@ public class BookMyStayApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Add-On Service Selection");
+        System.out.println("Booking History and Reporting");
+        System.out.println();
 
-        String reservationId = "Single-1";
+        BookingHistory history = new BookingHistory();
 
-        AddOnServiceManager manager = new AddOnServiceManager();
+        history.addReservation(new Reservation("Abhi", "Single"));
+        history.addReservation(new Reservation("Subha", "Double"));
+        history.addReservation(new Reservation("Vannathi", "Suite"));
 
-        Service breakfast = new Service("Breakfast", 500);
-        Service airportPickup = new Service("Airport Pickup", 1000);
+        BookingReportService reportService = new BookingReportService();
 
-        manager.addService(reservationId, breakfast);
-        manager.addService(reservationId, airportPickup);
-
-        double totalCost = manager.calculateTotalServiceCost(reservationId);
-
-        System.out.println("Reservation ID: " + reservationId);
-        System.out.println("Total Add-On Cost: " + totalCost);
+        reportService.generateReport(history);
     }
 }
