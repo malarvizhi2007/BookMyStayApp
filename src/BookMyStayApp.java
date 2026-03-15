@@ -1,22 +1,40 @@
-public class BookMyStayApp {
+public class BookMyStayApp{
 
     public static void main(String[] args) {
 
+        System.out.println("Concurrent Booking Simulation");
+
+        BookingRequestQueue queue = new BookingRequestQueue();
         RoomInventory inventory = new RoomInventory();
-        CancellationService service = new CancellationService();
+        RoomAllocationService service = new RoomAllocationService();
 
-        String reservationId = "Single-1";
-        String roomType = "Single";
+        queue.addRequest(new Reservation("Abhi","Single"));
+        queue.addRequest(new Reservation("Vannathi","Double"));
+        queue.addRequest(new Reservation("Kural","Suite"));
+        queue.addRequest(new Reservation("Subha","Single"));
 
-        service.registerBooking(reservationId, roomType);
+        Thread t1 = new Thread(
+                new ConcurrentBookingProcessor(queue,inventory,service)
+        );
 
-        System.out.println("Booking Cancellation");
+        Thread t2 = new Thread(
+                new ConcurrentBookingProcessor(queue,inventory,service)
+        );
 
-        service.cancelBooking(reservationId, inventory);
+        t1.start();
+        t2.start();
 
-        service.showRollbackHistory();
+        try{
+            t1.join();
+            t2.join();
+        }
+        catch(Exception e){
+            System.out.println("Thread execution interrupted.");
+        }
 
-        System.out.println("\nUpdated Single Room Availability: "
-                + inventory.getAvailability("Single"));
+        System.out.println("\nRemaining Inventory:");
+        System.out.println("Single: "+inventory.getRemaining("Single"));
+        System.out.println("Double: "+inventory.getRemaining("Double"));
+        System.out.println("Suite: "+inventory.getRemaining("Suite"));
     }
 }
