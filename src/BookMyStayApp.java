@@ -1,40 +1,26 @@
-public class BookMyStayApp{
+public class BookMyStayApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Concurrent Booking Simulation");
+        System.out.println("System Recovery");
 
-        BookingRequestQueue queue = new BookingRequestQueue();
+        String filePath = "inventory.txt";
+
         RoomInventory inventory = new RoomInventory();
-        RoomAllocationService service = new RoomAllocationService();
+        FilePersistenceService persistence = new FilePersistenceService();
 
-        queue.addRequest(new Reservation("Abhi","Single"));
-        queue.addRequest(new Reservation("Vannathi","Double"));
-        queue.addRequest(new Reservation("Kural","Suite"));
-        queue.addRequest(new Reservation("Subha","Single"));
+        // Try loading saved inventory
+        persistence.loadInventory(inventory, filePath);
 
-        Thread t1 = new Thread(
-                new ConcurrentBookingProcessor(queue,inventory,service)
-        );
+        System.out.println("\nCurrent Inventory:");
 
-        Thread t2 = new Thread(
-                new ConcurrentBookingProcessor(queue,inventory,service)
-        );
+        System.out.println("Single: " + inventory.getInventory().get("Single"));
+        System.out.println("Double: " + inventory.getInventory().get("Double"));
+        System.out.println("Suite: " + inventory.getInventory().get("Suite"));
 
-        t1.start();
-        t2.start();
+        // Save inventory snapshot
+        persistence.saveInventory(inventory, filePath);
 
-        try{
-            t1.join();
-            t2.join();
-        }
-        catch(Exception e){
-            System.out.println("Thread execution interrupted.");
-        }
-
-        System.out.println("\nRemaining Inventory:");
-        System.out.println("Single: "+inventory.getRemaining("Single"));
-        System.out.println("Double: "+inventory.getRemaining("Double"));
-        System.out.println("Suite: "+inventory.getRemaining("Suite"));
+        System.out.println("Inventory saved successfully.");
     }
 }
