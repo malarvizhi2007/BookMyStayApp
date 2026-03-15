@@ -2,17 +2,21 @@ public class BookMyStayApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Booking History and Reporting");
-        System.out.println();
+        RoomInventory inventory = new RoomInventory();
+        CancellationService service = new CancellationService();
 
-        BookingHistory history = new BookingHistory();
+        String reservationId = "Single-1";
+        String roomType = "Single";
 
-        history.addReservation(new Reservation("Abhi", "Single"));
-        history.addReservation(new Reservation("Subha", "Double"));
-        history.addReservation(new Reservation("Vannathi", "Suite"));
+        service.registerBooking(reservationId, roomType);
 
-        BookingReportService reportService = new BookingReportService();
+        System.out.println("Booking Cancellation");
 
-        reportService.generateReport(history);
+        service.cancelBooking(reservationId, inventory);
+
+        service.showRollbackHistory();
+
+        System.out.println("\nUpdated Single Room Availability: "
+                + inventory.getAvailability("Single"));
     }
 }
