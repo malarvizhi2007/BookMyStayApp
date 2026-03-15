@@ -1,18 +1,60 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+// Custom Exception
+class InvalidBookingException extends Exception {
+    public InvalidBookingException(String message) {
+        super(message);
+    }
+}
+
 public class BookMyStayApp {
+
+    static Map<String, Integer> inventory = new HashMap<>();
+
+    static {
+        inventory.put("Single", 3);
+        inventory.put("Double", 2);
+        inventory.put("Suite", 1);
+    }
+
+    public static void bookRoom(String guestName, String roomType) throws InvalidBookingException {
+
+        if (!inventory.containsKey(roomType)) {
+            throw new InvalidBookingException("Invalid room type selected.");
+        }
+
+        int roomsAvailable = inventory.get(roomType);
+
+        if (roomsAvailable <= 0) {
+            throw new InvalidBookingException("No rooms available.");
+        }
+
+        inventory.put(roomType, roomsAvailable - 1);
+    }
 
     public static void main(String[] args) {
 
-        System.out.println("Booking History and Reporting");
-        System.out.println();
+        Scanner sc = new Scanner(System.in);
 
-        BookingHistory history = new BookingHistory();
+        System.out.println("Booking Validation");
 
-        history.addReservation(new Reservation("Abhi", "Single"));
-        history.addReservation(new Reservation("Subha", "Double"));
-        history.addReservation(new Reservation("Vannathi", "Suite"));
+        System.out.print("Enter guest name: ");
+        String guestName = sc.nextLine();
 
-        BookingReportService reportService = new BookingReportService();
+        System.out.print("Enter room type (Single/Double/Suite): ");
+        String roomType = sc.nextLine();
 
-        reportService.generateReport(history);
+        try {
+
+            bookRoom(guestName, roomType);
+
+        } catch (InvalidBookingException e) {
+
+            System.out.println("Booking failed: " + e.getMessage());
+        }
+
+        sc.close();
     }
 }
